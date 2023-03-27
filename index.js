@@ -37,7 +37,7 @@ app.post("/api/tasks", logger, (req, res) => {
   const { error } = validateTask(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const tasks = {
+  const task = {
     id: tasks.length + 1,
     title: req.body.title,
   };
@@ -83,7 +83,7 @@ app.listen(port, () => console.log(`Listening on port ${port}...`));
 
 function validateTask(task) {
   const schema = {
-    title: Joi.string().min(4).required(),
+    title: Joi.string().min(3).required(),
   };
   return Joi.validate(task, schema);
 }
