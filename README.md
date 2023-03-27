@@ -14,14 +14,14 @@ Also, there is a **logger** that records the user's IP and the endpoints accesse
 
 ```JSON
 // Request body
-{"title" : ""};
+{"title" : ""}
 ```
 
 - Update an item: https://pwc-rest-api.onrender.com/api/tasks/:id
 
 ```JSON
 // Request body
-{"title" : ""};
+{"title" : ""}
 ```
 
 - Delete an item: https://pwc-rest-api.onrender.com/api/tasks/:id
