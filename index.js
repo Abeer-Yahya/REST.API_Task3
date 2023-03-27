@@ -7,9 +7,9 @@ app.use(express.json());
 const { logger } = require("./middlewares");
 
 const tasks = [
-  { id: 1, name: "task1" },
-  { id: 2, name: "task2" },
-  { id: 3, name: "task3" },
+  { id: 1, title: "task1" },
+  { id: 2, title: "task2" },
+  { id: 3, title: "task3" },
 ];
 
 // Show All data
@@ -39,7 +39,7 @@ app.post("/api/tasks", logger, (req, res) => {
 
   const tasks = {
     id: tasks.length + 1,
-    name: req.body.name,
+    title: req.body.title,
   };
   tasks.push(task);
   res.json({
@@ -57,7 +57,7 @@ app.put("/api/tasks/:id", logger, (req, res) => {
   const { error } = validateTask(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  task.name = req.body.name;
+  task.title = req.body.title;
   res.json({
     data: task,
     ...req.userInfo,
@@ -83,7 +83,7 @@ app.listen(port, () => console.log(`Listening on port ${port}...`));
 
 function validateTask(task) {
   const schema = {
-    name: Joi.string().min(3).required(),
+    title: Joi.string().min(4).required(),
   };
   return Joi.validate(task, schema);
 }
