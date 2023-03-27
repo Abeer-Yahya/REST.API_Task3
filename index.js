@@ -2,77 +2,88 @@ const Joi = require("joi");
 const express = require("express");
 const app = express();
 
-// Midlleware
+// Middleware
 app.use(express.json());
+const { logger } = require("./middlewares");
 
-const courses = [
-  { id: 1, name: "course1" },
-  { id: 2, name: "course2" },
-  { id: 3, name: "course3" },
+const tasks = [
+  { id: 1, name: "task1" },
+  { id: 2, name: "task2" },
+  { id: 3, name: "task3" },
 ];
 
 // Show All data
-app.get("/api/courses", (req, res) => {
-  res.send(courses);
+app.get("/api/tasks", logger, (req, res) => {
+  res.json({
+    data: tasks,
+    ...req.userInfo,
+  });
 });
 
 // Show single item based on id
-app.get("/api/courses/:id", (req, res) => {
-  const course = courses.find((c) => c.id === parseInt(req.params.id));
-  if (!course)
-    return res
-      .status(404)
-      .send("The course with the given ID was not found ...");
-  res.send(course);
+app.get("/api/tasks/:id", logger, (req, res) => {
+  const task = tasks.find((c) => c.id === parseInt(req.params.id));
+  if (!task)
+    return res.status(404).send("The task with the given ID was not found ...");
+
+  res.json({
+    data: task,
+    ...req.userInfo,
+  });
 });
 
 // Create a new item
-app.post("/api/courses", (req, res) => {
-  const { error } = validateCourse(req.body);
+app.post("/api/tasks", logger, (req, res) => {
+  const { error } = validateTask(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const course = {
-    id: courses.length + 1,
+  const tasks = {
+    id: tasks.length + 1,
     name: req.body.name,
   };
-  courses.push(course);
-  res.send(course);
+  tasks.push(task);
+  res.json({
+    data: task,
+    ...req.userInfo,
+  });
 });
 
 // Update an existing item
-app.put("/api/courses/:id", (req, res) => {
-  const course = courses.find((c) => c.id === parseInt(req.params.id));
-  if (!course)
-    return res
-      .status(404)
-      .send("The course with the given ID was not found ...");
+app.put("/api/tasks/:id", logger, (req, res) => {
+  const task = tasks.find((c) => c.id === parseInt(req.params.id));
+  if (!task)
+    return res.status(404).send("The task with the given ID was not found ...");
 
-  const { error } = validateCourse(req.body);
+  const { error } = validateTask(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  course.name = req.body.name;
-  res.send(course);
+  task.name = req.body.name;
+  res.json({
+    data: task,
+    ...req.userInfo,
+  });
 });
 
 // Delete an exisiting item
-app.delete("/api/courses/:id", (req, res) => {
-  const course = courses.find((c) => c.id === parseInt(req.params.id));
-  if (!course)
-    return res
-      .status(404)
-      .send("The course with the given ID was not found ...");
+app.delete("/api/tasks/:id", logger, (req, res) => {
+  const task = tasks.find((c) => c.id === parseInt(req.params.id));
+  if (!task)
+    return res.status(404).send("The task with the given ID was not found ...");
 
-  const index = courses.indexOf(course);
-  courses.splice(index, 1);
-  res.send(course);
+  const index = tasks.indexOf(task);
+  tasks.splice(index, 1);
+  res.json({
+    data: task,
+    ...req.userInfo,
+  });
 });
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
 
-function validateCourse(course) {
+function validateTask(task) {
   const schema = {
     name: Joi.string().min(3).required(),
   };
-  return Joi.validate(course, schema);
+  return Joi.validate(task, schema);
 }
