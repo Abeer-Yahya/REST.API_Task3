@@ -1,89 +1,13 @@
 const Joi = require("joi");
 const express = require("express");
 const app = express();
+require("dotenv").config();
+const routes = require("./routes/routes");
 
+// use the routes.js file to handle endpoints that start with /api
+app.use("/api", routes);
 // Middleware
 app.use(express.json());
-const { logger } = require("./middlewares");
-
-const tasks = [
-  { id: 1, title: "task1" },
-  { id: 2, title: "task2" },
-  { id: 3, title: "task3" },
-];
-
-// Show All data
-app.get("/api/tasks", logger, (req, res) => {
-  res.json({
-    data: tasks,
-    ...req.userInfo,
-  });
-});
-
-// Show single item based on id
-app.get("/api/tasks/:id", logger, (req, res) => {
-  const task = tasks.find((c) => c.id === parseInt(req.params.id));
-  if (!task)
-    return res.status(404).send("The task with the given ID was not found ...");
-
-  res.json({
-    data: task,
-    ...req.userInfo,
-  });
-});
-
-// Create a new item
-app.post("/api/tasks", logger, (req, res) => {
-  const { error } = validateTask(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
-
-  const task = {
-    id: tasks.length + 1,
-    title: req.body.title,
-  };
-  tasks.push(task);
-  res.json({
-    data: task,
-    ...req.userInfo,
-  });
-});
-
-// Update an existing item
-app.put("/api/tasks/:id", logger, (req, res) => {
-  const task = tasks.find((c) => c.id === parseInt(req.params.id));
-  if (!task)
-    return res.status(404).send("The task with the given ID was not found ...");
-
-  const { error } = validateTask(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
-
-  task.title = req.body.title;
-  res.json({
-    data: task,
-    ...req.userInfo,
-  });
-});
-
-// Delete an exisiting item
-app.delete("/api/tasks/:id", logger, (req, res) => {
-  const task = tasks.find((c) => c.id === parseInt(req.params.id));
-  if (!task)
-    return res.status(404).send("The task with the given ID was not found ...");
-
-  const index = tasks.indexOf(task);
-  tasks.splice(index, 1);
-  res.json({
-    data: task,
-    ...req.userInfo,
-  });
-});
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
-
-function validateTask(task) {
-  const schema = {
-    title: Joi.string().min(3).required(),
-  };
-  return Joi.validate(task, schema);
-}
