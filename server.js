@@ -3,6 +3,7 @@ const patientRoutes = require("./src/patient/routes");
 const app = express();
 require("dotenv").config();
 const logger = require("./src/middleware/logger");
+const ErrorHandler = require("./src/middleware/errorHandler");
 app.use(logger);
 app.use(ErrorHandler);
 

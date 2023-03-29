@@ -1,4 +1,3 @@
-// ErrorHandler.js
 const ErrorHandler = (err, req, res, next) => {
   console.log("Middleware Error Hadnling");
   const errStatus = err.statusCode || 500;
@@ -11,4 +10,4 @@ const ErrorHandler = (err, req, res, next) => {
   });
 };
 
-export default ErrorHandler;
+module.exports = ErrorHandler;
