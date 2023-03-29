@@ -1,5 +1,4 @@
 const { Router } = require("express");
-const { logger } = require("../middleware/logger");
 const controller = require("./controller");
 
 const router = Router();
