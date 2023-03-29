@@ -1,30 +1,34 @@
 # REST API Task
 
-In this repo, you can find **REST API** with full **CRUD** functionality and stores data in an **array in the memory**.
+In this repo, you can find **REST API** with full **CRUD** functionality and stores data in an **PostgreSQL Database**.
 
 Also, there is a **logger** that records the user's IP and the endpoints accessed with their respective HTTP methods.
 
+[API Demo](https://pwc-node-api.onrender.com)
+
 ## API EndPoints
 
-- Get All data: https://pwc-rest-api.onrender.com/api/tasks
+- Get All data: /api/v1/patients
 
-- Get single item: https://pwc-rest-api.onrender.com/api/tasks/:id
+- Get single item: /api/v1/patients/:id
 
-- Create new item: https://pwc-rest-api.onrender.com/api/tasks
-
-```JSON
-// Request body
-{"title" : ""}
-```
-
-- Update an item: https://pwc-rest-api.onrender.com/api/tasks/:id
+- Create new item: /api/v1/patients
 
 ```JSON
 // Request body
-{"title" : ""}
+{"name" : "First and Last name",
+ "contact": phone number as integer
+}
 ```
 
-- Delete an item: https://pwc-rest-api.onrender.com/api/tasks/:id
+- Update an item: /api/v1/patients/:id
+
+```JSON
+// Request body
+{"contact" : phone number as integer  }
+```
+
+- Delete an item: /api/v1/patients/:id
 
 ## Technologies Used
 
@@ -34,3 +38,5 @@ Also, there is a **logger** that records the user's IP and the endpoints accesse
 
 - [Express](https://www.npmjs.com/package/express) : web framework for Node.js.
 - [Joi](https://www.npmjs.com/package/joi) : For input validation.
+- [dotenv](https://www.npmjs.com/package/dotenv) : To use .env file.
+- [pg](https://www.npmjs.com/package/pg) : To connect a PostgreSQL database.
