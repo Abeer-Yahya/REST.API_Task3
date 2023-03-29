@@ -8,6 +8,7 @@ const tasks = [
   { id: 2, title: "task2" },
   { id: 3, title: "task3" },
 ];
+// Title input validation using Joi library
 function validateTask(task) {
   const schema = {
     title: Joi.string().min(3).required(),

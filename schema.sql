@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS tasks;
+
+CREATE TABLE tasks (
+  id INTEGER PRIMARY KEY,
+  title VARCHAR(100) NOT NULL,
+);
+
+INSERT INTO tasks (title)
+VALUES ('Abeer');
