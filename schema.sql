@@ -1,9 +1,7 @@
-DROP TABLE IF EXISTS tasks;
+DROP TABLE IF EXISTS patients;
 
-CREATE TABLE tasks (
-  id INTEGER PRIMARY KEY,
-  title VARCHAR(100) NOT NULL,
+CREATE TABLE patients (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR ( 50 ) UNIQUE NOT NULL,
+	contact INTEGER NOT NULL
 );
-
-INSERT INTO tasks (title)
-VALUES ('Abeer');
