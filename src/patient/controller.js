@@ -1,66 +1,74 @@
-const pool = require("../../db.js");
-const queries = require("./queries");
+const prisma = require("./prisma");
+
 const getPatients = (req, res) => {
-  pool.query(queries.getPatients, (error, results) => {
-    if (error) throw error;
-    res.status(200).json(results.rows);
-  });
+  try {
+    prisma.patients.findMany().then((results) => {
+      res.status(200).send(results);
+    });
+  } catch (error) {
+    res.status(500).send(`Something went wrong: ${error.message}`);
+  }
 };
 
 const getPatientById = (req, res) => {
-  const id = parseInt(req.params.id);
-  pool.query(queries.getPatientById, [id], (error, results) => {
-    if (error) throw error;
-    res.status(200).json(results.rows);
-  });
+  try {
+    prisma.patients
+      .findUnique({
+        where: { id: parseInt(req.params.id) },
+      })
+      .then((results) => {
+        if (results) res.status(200).send(results);
+        else res.status(404).send("Patient does not exist");
+      });
+  } catch (error) {
+    res.status(500).send(`Something went wrong: ${error.message}`);
+  }
 };
 
 const addPatient = (req, res) => {
-  const { name, contact } = req.body;
-
-  // Check if name exists
-  pool.query(queries.checkNameExists, [name], (error, results) => {
-    if (results.rows.length) {
-      res.send("Patient already exists.");
-    }
-
-    // add patient to db
-    pool.query(queries.addPatient, [name, contact], (error, results) => {
-      if (error) throw error;
-      res.status(201).send("Patient Added Successfully!");
-      console.log("Patient Added Successfully!");
-    });
-  });
+  try {
+    prisma.patients
+      .create({
+        data: { name: req.body.name, contact: req.body.contact },
+      })
+      .then((results) => res.status(201).send(results));
+  } catch (error) {
+    res.status(500).send(`Something went wrong: ${error.message}`);
+  }
 };
 
 const removePatient = (req, res) => {
-  const id = parseInt(req.params.id);
+  try {
+    if (!parseInt(req.params.id))
+      return res.status(404).send("Patient with given ID not found");
 
-  pool.query(queries.getPatientById, [id], (error, results) => {
-    const noPatientFound = !results.rows.length;
-    if (noPatientFound) {
-      res.send("Patient does not exist in the db!");
-    }
-    pool.query(queries.removePatient, [id], (error, results) => {
-      if (error) throw error;
-      res.status(200).send("Patient removed successfully!");
-    });
-  });
+    prisma.patients
+      .delete({
+        where: { id: parseInt(req.params.id) },
+      })
+      .then((results) =>
+        res
+          .status(200)
+          .send(`Patient deleted with ID: ${parseInt(req.params.id)}`)
+      );
+  } catch (error) {
+    res.status(500).send(`Something went wrong: ${error.message}`);
+  }
 };
 
 const updatePatient = (req, res) => {
-  const id = parseInt(req.params.id);
-  const { contact } = req.body;
-  pool.query(queries.getPatientById, [id], (error, results) => {
-    const noPatientFound = !results.rows.length;
-    if (noPatientFound) {
-      res.send("Patient does not exist in the db.");
-    }
-    pool.query(queries.updatePatient, [contact, id], (error, results) => {
-      if (error) throw error;
-      res.status(200).send("Patient Updated Successfully!");
-    });
-  });
+  try {
+    prisma.patients
+      .update({
+        where: { id: parseInt(req.params.id) },
+        data: { contact: req.body.contact },
+      })
+      .then((results) =>
+        res.status(201).send(`Patient modified with ID: ${req.params.id}`)
+      );
+  } catch (error) {
+    res.status(500).send(`Something went wrong: ${error.message}`);
+  }
 };
 
 module.exports = {
